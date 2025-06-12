@@ -1,5 +1,6 @@
 # Modal 部署指南,会封号，勿用
-fork本项目或者下载代码，自行构建私库。
+自行根据官网sandbox的文档，试着改成sandbox运行。
+我搞不定
 
 1. 注册网站：[https://modal.com](https://modal.com)
 
