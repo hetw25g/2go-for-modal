@@ -14,7 +14,8 @@ image = (
 
 @app.function(
     image=image,
-    timeout=86400
+    timeout=86400,
+    concurrency_limit=1
 )
 def run_app():
     os.chdir("/workspace")
