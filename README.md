@@ -12,7 +12,7 @@
 - `MODAL_TOKEN_SECRET`  
   这是你的 Modal Token Secret，通常是以 `as-` 开头的一串字符，比如 `as-Wo9a4CUsfGHkFu8q7`。
 
-4. 修改app.py里面的变量参数，启动github action即可。
+4. 修改app.py里面的变量参数，deploy.py里面的app名字最好还是修改一下，最好让AI再修改一下。启动github action即可。
 5.  节点获取说明：  
 根据 UUID 和固定隧道域名手动配置，支持 vmess、vless、trojan 三种协议。
 
