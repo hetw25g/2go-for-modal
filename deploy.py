@@ -1,51 +1,38 @@
 import modal
-import subprocess
-import sys
-import os
 
-app = modal.App(name="persistent-app-v2")
+APP_NAME = "suiyixiugai"
+WORKSPACE_DIR = "/workspace"
+
+app = modal.App.lookup(APP_NAME, create_if_missing=True)
 
 image = (
     modal.Image.debian_slim()
     .apt_install("curl")
     .pip_install_from_requirements("requirements.txt")
-    .add_local_dir(".", remote_path="/workspace")
+    .add_local_dir(".", remote_path=WORKSPACE_DIR)
 )
 
-@app.function(
-    image=image,
-    timeout=86400,
-    concurrency_limit=1
-)
-def run_app():
-    os.chdir("/workspace")
-    print("🟢 Starting app.py...")
+def run_in_sandbox():
+    print("🧪 Launching sandbox...")
 
-    process = subprocess.Popen(
-        [sys.executable, "app.py"],
-        stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE,
-        text=True,
-        bufsize=1,
-        universal_newlines=True
-    )
+    sandbox = modal.Sandbox.create(app=app, image=image,timeout=86400)
 
-    while True:
-        output = process.stdout.readline()
-        if output == '' and process.poll() is not None:
-            break
-        if output:
-            print(output.strip())
+    # ✅ 后台执行 app.py，不阻塞 GitHub Actions
+    print("🚀 Running app.py in sandbox (background)...")
+    sandbox.exec("sh", "-c", f"cd {WORKSPACE_DIR} && nohup python3 app.py > /dev/null 2>&1 &")
 
-    if process.returncode != 0:
-        error = process.stderr.read()
-        print(f"🔴 Process failed with code {process.returncode}: {error}")
-        raise modal.exception.ExecutionError("Script execution failed")
+    print("✅ Launched app.py in sandbox.")
+    # 不 terminate，保留沙盒运行
+    # sandbox.terminate()
 
 if __name__ == "__main__":
-    print("🚀 Deploying application...")
-    app.deploy()  # ✅ 修复点：不要加参数
+    import argparse
 
-    print("⚙️ Launching remote run...")
-    run_app.spawn()  # ✅ 异步执行函数
-    print("✅ Deployment and remote launch complete.")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--sandbox", action="store_true", help="Run app.py in Modal Sandbox")
+    args = parser.parse_args()
+
+    if args.sandbox:
+        run_in_sandbox()
+    else:
+        print("ℹ️ Use --sandbox to run in Modal Sandbox")
