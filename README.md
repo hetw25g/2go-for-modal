@@ -18,6 +18,32 @@
 
 ---
 
+## 🌍 运行地域（Region）配置说明
+
+在 `deploy.py` 文件中的第十八行：
+
+```python
+sandbox = modal.Sandbox.create(app=app, image=image, timeout=86400, region="us-west")
+```
+你可以根据实际需求修改 region="..." 来选择部署任务运行的地理位置。该参数影响执行延迟、合规性和数据传输速度等
+
+### 🌐 Modal 支持的 Region 列表
+
+| Modal Region 值        | Cloud Provider | 地理位置描述                             |
+|------------------------|----------------|------------------------------------------|
+| `"us-east"`            | AWS / GCP      | 美国东部（弗吉尼亚、俄亥俄）             |
+| `"us-west"`            | AWS / GCP      | 美国西部（加州、俄勒冈）                 |
+| `"us-central"`         | GCP            | 美国中部（爱荷华）                       |
+| `"eu-west"`            | AWS / GCP      | 欧洲西部（比利时、爱尔兰、法国）         |
+| `"eu-north"`           | AWS            | 欧洲北部（斯德哥尔摩）                   |
+| `"ap-northeast"`       | AWS / GCP      | 亚太东北（东京、首尔、大阪）             |
+| `"ap-southeast"`       | AWS / GCP      | 亚太东南（新加坡、雅加达）               |
+| `"ap-south"`           | AWS            | 亚太南部（孟买）                         |
+
+️ 示例：
+将 region="us-west" 替换为 region="ap-southeast" 可将任务运行在新加坡或雅加达的数据中心。
+
+
 ## 感谢
 
 
